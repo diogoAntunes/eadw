@@ -5,6 +5,7 @@ from UserTools import *
 from MoviesTools import *
 import os
 import re
+
  
 def getPrediction(movieID, userID):
 
@@ -12,6 +13,7 @@ def getPrediction(movieID, userID):
 	# users = UserTools()
 
 	userMovies = getUserMovies(userID)
+	
 	# print userMovies
 	getMovieRating(movieID, userMovies)
 

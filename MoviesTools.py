@@ -1,10 +1,15 @@
 
+import sys
+sys.path.append('Tools')
+import imdbTools
+
 # class MoviesTools:
 
 # Get the genre of every user movie
 def getGenre(movieID, userMovies):
 	
 	moviesGenre = dict()
+	moviesRating = dict()
 	# unknown | Action | Adventure | Animation |
 	# Childrens | Comedy | Crime | Documentary | 
 	# Drama | Fantasy | Film-Noir | Horror | 
@@ -16,10 +21,17 @@ def getGenre(movieID, userMovies):
 			movieParsed = movie.split("|")
 			movieID = int(movieParsed[0])
 			if movieID in userMovies.keys():
+					movieName = movieParsed[1].split("(")[0]
+					rating = imdbTools.moviesRating(movieName)
+					moviesRating[movieName] = rating
 					genres = movieParsed[5:]
 					moviesGenre[movieID] = []
+					print moviesRating
+					break
 					for genre in genres:
 							moviesGenre[movieID].append(int(genre))
+
+	print moviesRating						
 	return moviesGenre
 
 def getRatings(id, userMovies):

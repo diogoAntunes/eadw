@@ -1,4 +1,3 @@
-from App import init
 from App import getPrediction
 
 # init()
