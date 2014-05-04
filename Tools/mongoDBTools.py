@@ -19,3 +19,4 @@ def mongoFindMovie(movieName):
 
 	if doc.count() != 0:
 		return doc
+

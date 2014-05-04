@@ -53,11 +53,13 @@ def imdbSearch(title):
 	# pprint(keys)
 	# pprint(s_result['cast'])
 	# pprint(s_result['actors'])
-	mongoInsert(dataToDB)
+	# mongoInsert(dataToDB)
+	return dataToDB
 
 def moviesToDB():
 
 	f = open("u.item", "r")
+	finalInsert = []
 
 	movies = dict()
 	movies['movies'] = []
@@ -65,7 +67,10 @@ def moviesToDB():
 	for movie in f:
 		movieParsed = movie.split("|")
 		# movies.append(movieParsed[1].split("(")[0])
-		imdbSearch(movieParsed[1].split("(")[0])
+		finalInsert.append(imdbSearch(movieParsed[1].split("(")[0]))
 
+	return finalInsert
 
-moviesToDB()
+a = moviesToDB()
+
+mongoInsert(a)
