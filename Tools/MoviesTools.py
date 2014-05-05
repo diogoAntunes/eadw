@@ -1,42 +1,34 @@
-
-import sys
-sys.path.append('Tools')
-import imdbTools
-
-# class MoviesTools:
-
 # Get the genre of every user movie
 def getGenre(movieID, userMovies):
 	
 	moviesGenre = dict()
-	moviesRating = dict()
+	# moviesRating = dict()
 	# unknown | Action | Adventure | Animation |
 	# Childrens | Comedy | Crime | Documentary | 
 	# Drama | Fantasy | Film-Noir | Horror | 
 	# Musical | Mystery | Romance | Sci-Fi |Thriller | 
 	# War | Western |
-	f = open("u.item", "r")
+	f = open("./Util/u.item", "r")
 
 	for movie in f:
 			movieParsed = movie.split("|")
 			movieID = int(movieParsed[0])
 			if movieID in userMovies.keys():
 					movieName = movieParsed[1].split("(")[0]
-					rating = imdbTools.moviesRating(movieName)
-					moviesRating[movieName] = rating
+					# rating = imdbTools.moviesRating(movieName)
+					# moviesRating[movieName] = rating
+					# print moviesRating
 					genres = movieParsed[5:]
 					moviesGenre[movieID] = []
-					print moviesRating
-					break
 					for genre in genres:
 							moviesGenre[movieID].append(int(genre))
 
-	print moviesRating						
+	# print moviesRating						
 	return moviesGenre
 
 def getRatings(id, userMovies):
 
-	f = open("u.item", "r")
+	f = open("./Util/u.item", "r")
 	
 	moviesGenre = getGenre(id, userMovies)
 	movieFound = dict()
@@ -85,9 +77,3 @@ def getMovieRating(movieID, userMovies):
 	print "MovieID: ", movieID
 	print "RatingPrediction: ", total
 	print "RealRating: ", userMovies[movieID]
-
-	# av = 0
-	# for rate in rates:
-	# 	av += userMovies[rate]
-
-	# 	print float(av)/len(rates)

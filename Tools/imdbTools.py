@@ -55,7 +55,7 @@ def imdbSearch(title):
 
 def moviesToDB():
 
-	f = open("../u.item", "r")
+	f = open("./Util/u.item", "r")
 
 	movies = dict()
 	movies['movies'] = []
@@ -76,6 +76,4 @@ def moviesRating(movieName):
 	if 'rating' in keys:
 		return s_result['rating']
 
-
-# imdbSearch('Twelve Monkeys')
-# moviesToDB()
+# print moviesRating('Apostle, The (1997)')
