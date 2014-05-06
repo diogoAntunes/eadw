@@ -37,13 +37,14 @@ def getUserMoviesRating(userMovies):
 			# fetch imdbpy or rt
 			if float(rating) == 0:
 				rating = moviesRating(movieName)
+				mongoUpdate(movieName, rating)
 			
 			userRate += float(userMovies[movieID])
-			imdbRate += float(rating)
+			imdbRate += float(rating)/2
 			userMoviesRating[movieID] = {
 				"title" : movieName,
 				"rating" : userMovies[movieID],
-				"imdb" : rating
+				"imdb" : float(rating)/2
 			}
 
 	userMoviesRating['userRate'] = userRate

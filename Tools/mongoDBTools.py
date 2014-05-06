@@ -1,8 +1,6 @@
 from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
-
-
 # Create Class
 
 def mongoInsert(data):
@@ -22,6 +20,12 @@ def mongoFindMovie(movieName):
 
 	if doc:
 		return doc['rating']
+
+def mongoUpdate(movieName, newRating):
+
+	db = client.test
+	imdb = db.imdb
+	imdb.update({"title" : movieName}, {"$set": {"rating" : newRating}})
 
 # xpto = mongoFindMovie("Devil's Own, The (1997)")
 # print xpto['rating']

@@ -20,8 +20,8 @@ def imdbPrediction(movieID, userID):
 
 	uRate = (userMoviesRating['userRate'])/(sizeUserMovies)
 	imdbRate = (userMoviesRating['imdbRate'])/(sizeUserMovies)
-	imdbRate = imdbRate*(5/10)
-	pred = uRate - imdbRate
+	
+	pred = imdbRate - uRate	
 
 	pprint(userMoviesRating)
 
