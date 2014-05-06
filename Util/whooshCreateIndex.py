@@ -19,7 +19,7 @@ writer = ix.writer()
 
 #Document interation
 #Open file
-file = open("u.data")
+file = open("u1.base")
 
 # 196	242	3	881250949
 # user id | item id | rating | timestamp
