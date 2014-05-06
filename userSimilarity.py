@@ -134,10 +134,9 @@ def pred(user, prediction):
 		if item in predictionUsers:
 			chosenUsersFinal.append(item)
 
-
 	flag = len(chosenUsersFinal)
-	print "FLAGGGGG"
-	print flag
+	#print "FLAGGGGG"
+	#print flag
 
 	#VARIAVEIS PARA PREDICTON
 	SomatorioCima = 0
