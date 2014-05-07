@@ -22,6 +22,17 @@ def selectMode():
 md = selectMode()
 
 if (md <= 3 & md >= 1):
-	print "Sucess" #chamar funcao para arrancar o modo pretendido
+	if (md == 1):
+		print "Online Mode"
+	if (md == 2):
+		print "Batch Training Mode"
+	if (md == 3):
+		print "Batch Testing Mode"
+
 else:
 	print "The input is not a valid number! Select a value between 1 and 3."
+
+
+#def OnMode:
+#def TrainMode:
+#def TestMode:
