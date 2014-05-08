@@ -67,8 +67,11 @@ def sim(a, b, userMovies, predict):
 
 	RateInA = math.sqrt(RateInA)
 	RateInB = math.sqrt(RateInB)
-
-	Similaridade = ((SomatorioRateInA_B)/(RateInA * RateInA))
+	
+	if((RateInA*RateInB) != 0):
+		Similaridade = ((SomatorioRateInA_B)/(RateInA * RateInB))
+	else:
+		Similaridade = 0
 	
 	#RATING ITEM PARA PREDICTION POR ESTE USER B
 	Rbp = ratesB[predict]
@@ -154,8 +157,10 @@ def pred(user, prediction):
 			SomatorioCima += (Similaridade * (Rbp - rB))
 			SomatorioBaixo += Similaridade
 
-
-	predP = (rA + (SomatorioCima/SomatorioBaixo))
+	if(SomatorioBaixo != 0):
+		predP = (rA + (SomatorioCima/SomatorioBaixo))
+	else:
+		predP = 3
 
 	return predP
 	#print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
