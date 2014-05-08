@@ -1,7 +1,6 @@
 import imdb
 from pprint import pprint
 from rottentomatoes import RT
-from mongoDBTools import mongoInsert
 
 # API KEY ROTTEN TOMATOES: 
 # swkke96gu5rwqtrqakdewbgs
@@ -50,21 +49,9 @@ def imdbSearch(title):
 	# pprint(keys)
 	# pprint(s_result['cast'])
 	# pprint(s_result['actors'])
-	mongoInsert(dataToDB)
+	# mongoInsert(dataToDB)
 
 
-def moviesToDB():
-
-	f = open("./Util/u.item", "r")
-
-	movies = dict()
-	movies['movies'] = []
-	count = 0
-	for movie in f:
-		movieParsed = movie.split("|")
-		# movies.append(movieParsed[1].split("(")[0])
-		imdbSearch(movieParsed[1].split("(")[0])
-			
 def moviesRating(movieName):
 
 	ia = imdb.IMDb()

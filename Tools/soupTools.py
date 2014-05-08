@@ -2,6 +2,9 @@ import sys
 import re
 import urllib
 import urlparse
+import unicodedata
+import simplejson
+import json
 
 from mechanize import Browser
 from BeautifulSoup import BeautifulSoup
@@ -20,40 +23,49 @@ def getRatings(url):
 		br.open(url)
 
 		if re.search(r'/title/tt.*', br.geturl()):
+			print 'B'
 			soup = BeautifulSoup(MyOpener().open(url).read())
 		else:
 			link = br.find_link(url_regex = re.compile(r'/title/tt.*'))
 			res = br.follow_link(link)
 			soup = BeautifulSoup(res.read())
-		 
-		# movie_title = soup.find('title').contents[0]
-		# des = soup.find('meta',{'name':'description'})['content']
 		
+		# movie_title = soup.find('title').contents[0]
+		des = (soup.find('meta',{'name':'description'})['content']).encode('utf-8')
 		rate = soup.find('span',itemprop='ratingValue')
+		# print movie_title
+		# print des
 	except:
 		print 'Error no rating'
 		rating = str(0)
+		des = ""
 	else:
 		if rate:
 			rating = str(rate.contents[0])
 		else:
 			rating = str(0)
 			print 'No rate'
-	 
+	
 
-	return rating
+
+	return rating, des
 
 # Saves Ratings of Movie to JSON file
 def moviesRatingToDB():
 
-	f = open("./Util/u.item", "r")
+	f = open("u.item", "r")
 	finalInsert = []
 
 	movies = dict()
 	for movie in f:
 		movieParsed = movie.split("|")
-		rate = getRatings(movieParsed[4])
-		movies = ({"title" : movieParsed[1].encode('utf-8'), "rating" : rate})
+		movieID = int(movieParsed[0])
+		rate, des = getRatings(movieParsed[4])
+		movies = ({
+			"rating" : rate,
+			"des" : des,
+			"id" : movieID
+			})
 		finalInsert.append(movies)
 		print movieParsed[0]
 		try:
@@ -62,9 +74,10 @@ def moviesRatingToDB():
 			fd.write(jsondata)
 			fd.close()
 		except:
-			print 'ERROR writing', filename
+			print 'ERROR writing'
 			pass
 
+moviesRatingToDB()
 
-# getRatings('http://us.imdb.com/M/title-exact?Yinshi%20Nan%20Nu%20(1994)')
+# getRatings('http://us.imdb.com/M/title-exact?Mis%E9rables%2C%20Les%20%281995%29')
 # getRatings('http://us.imdb.com/M/title-exact?Mighty%20Aphrodite%20(1995)')

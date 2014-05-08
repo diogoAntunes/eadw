@@ -13,8 +13,7 @@ schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), ra
 resultsPred = []
 resultsCorrect = []
 i=0
-# 196	242	3	881250949
-# user id | item id | rating | timestamp
+
 for line in file:
 	writer = ix.writer()
 	doc = re.split('\W+', line)	
