@@ -1,5 +1,5 @@
 import sys
-sys.path.append('Tools')
+sys.path.append('../Tools')
 from UserTools import *
 from MoviesTools import *
 from pprint import pprint
@@ -8,8 +8,8 @@ from pprint import pprint
 # e depois chamava-se aqui um a um com o seu devido peso
 def getPrediction(movieID, userID):
 	userMovies = getUserMovies(userID)
-	getMovieRating(movieID, userMovies)
-
+	bla = getMovieRating(movieID, userMovies)
+	return bla
 # getPrediction(264, 3)
 
 def imdbPrediction(movieID, userID):
