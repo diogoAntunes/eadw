@@ -3,17 +3,18 @@ from whoosh.qparser import  *
 import re
 from pprint import pprint
 import math
-import sys
-sys.path.append('../Tools')
-from mongoDBTools import *
 
 def sim(a, b, userMovies, predict):
 
-	# ix = open_dir("indexdir")
+	ix = open_dir("indexdir")
 	ratesA = userMovies # movieID : raiting
-	ratesB = userMongoGetUser(b)
+	ratesB = dict()		# movieID : raiting
 
-	# print ratesB
+	with ix.searcher() as searcher:
+		query = QueryParser("userID",ix.schema,group=OrGroup).parse(b)
+		results = searcher.search(query,limit=10000)
+		for r in results:
+			ratesB[r['itemID']] = r['rating'] 
 
 	#print b
 	#print ratesB
@@ -73,7 +74,6 @@ def sim(a, b, userMovies, predict):
 		Similaridade = 0
 	
 	#RATING ITEM PARA PREDICTION POR ESTE USER B
-	# print ratesB[predict]
 	Rbp = ratesB[predict]
 
 	#print "SIMILARIDADE: "
@@ -85,32 +85,51 @@ def sim(a, b, userMovies, predict):
 #CALCULO PARA PREDICTION
 def pred(user, prediction):
 
-	userMovies = userMongoGetUser(user)	#dicionario com os items rated e rating do user escolhido
-	sameMovies = dict()		#array de users com pelo menos 1 item rated igual ao user escolhido
+	user = str(user)
+	ix = open_dir("indexdir")
+	userMovies = dict()		#dicionario com os items rated e rating do user escolhido
+	sameMovies = dict()		#dicionario de users com pelo menos 1 item rated igual ao user escolhido
 	countUsers = dict()
-	predictionUsers = dict()
+	predictionUsers = []
 	chosenUsers = []
 	chosenUsersFinal = []
 
-	for movie in userMovies.keys():
-		sameMovies = mongoFindItem(movie, sameMovies)
-	
-	# print sameMovies
-	#PROCURAR NOS USERS SE TEM O ITEM QUE O CLIENTE QUER SABER O RATING
-	predictionUsers = mongoFindItemPred(prediction)
+	with ix.searcher() as searcher:
+		query = QueryParser("userID",ix.schema,group=OrGroup).parse(user)
+		results = searcher.search(query,limit=400)
+
+		for r in results:
+			userMovies[r['itemID']] = r['rating']
+		#print user
+		#print len(userMovies.keys())
+		#print userMovies
+
+		for item in userMovies.keys():
+			a = str(item)
+			query = QueryParser("itemID",ix.schema,group=OrGroup).parse(a)
+			results = searcher.search(query,limit=10000)
+			
+			sameMovies[a] = []
+			for r in results:
+				sameMovies[a].append(r['userID'])
+
+		#PROCURAR NOS USERS SE TEM O ITEM QUE O CLIENTE QUER SABER O RATING
+		query = QueryParser("itemID",ix.schema,group=OrGroup).parse(str(prediction))
+		results = searcher.search(query,limit=10000)
+		for r in results:
+			predictionUsers.append(r['userID'])
 
 	#VERIFICAR NUMERO DE ITEMS RATED EM COMUM ENTRE UTILIZADOR ESCOLHIDO E RESTANTES
-	# sameMovies = ['userID', 'userID', 'userID'...]
-	# ids de users que tem pelo menos um dos filmes do user
-	# for item in sameMovies:
-	# 	if item in countUsers.keys():
-	# 		countUsers[item] += 1
-	# 	else:
-	# 		countUsers[item] = 1
+	for item in sameMovies:
+		for valor in sameMovies[item]:
+			if valor in countUsers.keys():
+				countUsers[valor] += 1
+			else:
+				countUsers[valor] = 1
 	
 	#APENAS ESCOLHER OS QUE TEM 15 OU MAIS ITEMS RATED EM COMUM
-	for item in sameMovies.keys():
-		if (sameMovies[item] >= 15):
+	for item in countUsers:
+		if (countUsers[item] >= 15):
 			chosenUsers.append(item)
 
 	#SELECIONAR APENAS OS USERS QUE DERAM RATE AO ITEM QUE O UTILIZADOR ESCOLHIDO AINDA NAO PONTUOU
@@ -129,7 +148,7 @@ def pred(user, prediction):
 
 	#FORMULA PARA PREDICTION PRED(A,P)
 	for item in chosenUsersFinal:
-		Similaridade, Rbp, rA, rB = sim(user, item, userMovies, prediction)
+		Similaridade, Rbp, rA, rB = sim(user, str(item), userMovies, prediction)
 		if (flag > 9):
 			if (Similaridade >= 0.5):
 				SomatorioCima += (Similaridade * (Rbp - rB))
@@ -148,3 +167,8 @@ def pred(user, prediction):
 	#print userMovies
 
 #pred(3, 65)
+
+
+
+
+
