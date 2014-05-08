@@ -8,7 +8,7 @@ def getGenre(movieID, userMovies):
 	# Drama | Fantasy | Film-Noir | Horror | 
 	# Musical | Mystery | Romance | Sci-Fi |Thriller | 
 	# War | Western |
-	f = open("./Util/u.item", "r")
+	f = open("../Util/u.item", "r")
 
 	for movie in f:
 			movieParsed = movie.split("|")
@@ -28,7 +28,7 @@ def getGenre(movieID, userMovies):
 
 def getRatings(id, userMovies):
 
-	f = open("./Util/u.item", "r")
+	f = open("../Util/u.item", "r")
 	
 	moviesGenre = getGenre(id, userMovies)
 	movieFound = dict()
@@ -67,13 +67,17 @@ def getRatings(id, userMovies):
 def getMovieRating(movieID, userMovies):
 
 	rates = getRatings(movieID, userMovies)
+	#print rates
+	total = 3
 	somRate = 0
 	somIntersect = 0
 	for rate in rates:
 		somRate += userMovies[rate] * rates[rate]
 		somIntersect += rates[rate]
 
-	total = float(somRate)/somIntersect
-	print "MovieID: ", movieID
-	print "RatingPrediction: ", total
-	print "RealRating: ", userMovies[movieID]
+	if (somIntersect != 0):
+		total = float(somRate)/somIntersect
+	#print "MovieID: ", movieID
+	#print "RatingPrediction: ", total
+	#print "RealRating: ", userMovies[movieID]
+	return total

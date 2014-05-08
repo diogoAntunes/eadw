@@ -1,7 +1,7 @@
 from whoosh.index import open_dir
 from whoosh.qparser import  *
-from imdbTools import *
-from mongoDBTools import *
+#from imdbTools import *
+#from mongoDBTools import *
 import re
 import linecache
 
@@ -10,10 +10,9 @@ def getUserMovies(userID):
 	userMovies = dict()
 	userMovies = userMongoGetUser(userID)
 	
-	return userMovies
-
 # Returns the rating of the movies
 # the user has rated
+
 def getUserMoviesRating(userMovies, predictID):
 
 	#  mudar tudo para nova mongoDB
@@ -43,7 +42,7 @@ def getUserMoviesRating(userMovies, predictID):
 			"imdb" : float(rating)/2
 		}
 
-	userMoviesRating['userRate'] = userRate
-	userMoviesRating['imdbRate'] = imdbRate
+# 	userMoviesRating['userRate'] = userRate
+# 	userMoviesRating['imdbRate'] = imdbRate
 
-	return userMoviesRating
+# 	return userMoviesRating
