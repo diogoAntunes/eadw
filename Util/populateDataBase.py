@@ -9,19 +9,27 @@ def mongoInsertJSON():
 	client = MongoClient('localhost', 27017)	
 	db = client.test
 	imdb = db.imdb
-	fd = open('populateData', 'r')
+	fd = open('back', 'r')
 	text = fd.read()
 	fd.close()
 	returndata = {}
 	returndata = simplejson.loads(text)
 	imdb.insert(returndata)
 
+# {
+# 	userID : id,
+# 	movies : [{
+# 		movieID : rating
+# 	}]
+# 		
+# }
 def mongoPopulateUsers():
 	client = MongoClient('localhost', 27017)	
 	db = client.test
 	users = db.users
 
-	file = open("u.data")
+	# file = open("u.data")
+	file = open("u1.base")
 
 	# 196	242	3	881250949
 	# user id | item id | rating | timestamp
@@ -32,3 +40,5 @@ def mongoPopulateUsers():
 		rating = int(doc[2])
 		newUser = {'userID' : userID, 'itemID' : itemID, 'rating' : rating }
 		users.insert(newUser)
+
+mongoInsertJSON()

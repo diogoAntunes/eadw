@@ -1,5 +1,8 @@
 import re
 from userSimilarity import *
+import sys
+sys.path.append('../')
+from eadw import *
 
 file = open("u1.test")
 resultsPred = []
@@ -11,10 +14,14 @@ for line in file:
 	userID = int(doc[0])
 	itemID = int(doc[1])
 	rating = int(doc[2])
-	possibleRating = pred(userID, itemID)
+	#possibleRating = pred(userID, itemID)
+	# print itemID
+	# print userID
+	possibleRating = imdbPrediction(itemID, userID)
 	resultsPred.append(possibleRating)
 	resultsCorrect.append(rating)
-	print "PREDICTION = " + str(possibleRating)
+	# print "PREDICTION = " + str(possibleRating)
+	print "PREDICTION = " + str(possibleRating) + " 	CORRECT RATING --------->" + str(rating)
 
 
 MAE = 0			#MEAN ABSOLUTE ERROR
@@ -25,6 +32,6 @@ for item in resultsPred:
 	Somatorio += abs(resultsPred[i] - resultsCorrect[i])
 	i += 1
 
-MAE = (Somatorio/i)
+MAE = (float(Somatorio)/i)
 
 print "MEAN ABSOLUTE VALUE = " + str(MAE)

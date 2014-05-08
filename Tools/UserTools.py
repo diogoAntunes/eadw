@@ -3,49 +3,45 @@ from whoosh.qparser import  *
 from imdbTools import *
 from mongoDBTools import *
 import re
+import linecache
+
 
 def getUserMovies(userID):
 	userMovies = dict()
-	ix = open_dir("indexdir")
+	userMovies = userMongoGetUser(userID)
 	
-	with ix.searcher() as searcher:
-	    query = QueryParser("userID",ix.schema,group=OrGroup).parse(str(userID))
-	    results = searcher.search(query,limit=100)
-	    for r in results:
-	        userMovies[r['itemID']] = r['rating'] 
-	
-	# print userMovies   
 	return userMovies
 
 # Returns the rating of the movies
 # the user has rated
-def getUserMoviesRating(userMovies):
+def getUserMoviesRating(userMovies, predictID):
 
+	#  mudar tudo para nova mongoDB
 	userMoviesRating = dict()
 	imdbRate = 0
 	userRate = 0
 
-	f = open("./Util/u.item", "r")
-
-	for movie in f:
-		movieParsed = movie.split("|")
-		movieID = int(movieParsed[0])
-		if movieID in userMovies.keys():
-			movieName = movieParsed[1].encode('utf-8')
-			rating = mongoFindMovie(movieName)
-			# If rate is 0
-			# fetch imdbpy or rt
-			if float(rating) == 0:
-				rating = moviesRating(movieName)
-				mongoUpdate(movieName, rating)
-			
-			userRate += float(userMovies[movieID])
-			imdbRate += float(rating)/2
-			userMoviesRating[movieID] = {
-				"title" : movieName,
-				"rating" : userMovies[movieID],
-				"imdb" : float(rating)/2
-			}
+	# userMovies = {'movieID' : 'rating'}
+	# buscar o rating dos users movies ao imdb
+	# imdbMongoGetMovie(movieID)
+	for movie in userMovies.keys():
+		rating = imdbMongoGetMovie(movie)['rating']
+		# If rate is 0
+		# fetch imdbpy or rt
+		# imdb needs the movie tittle
+		if float(rating) == 0:
+			movieNoRate = linecache.getline('u.item', movie)
+			movieParsed = movieNoRate.split("|")
+			movieName = movieParsed[1]
+			rating = moviesRating(movieName)
+			imdbMongoSetRate(movie, rating)
+		
+		userRate += float(userMovies[movie])
+		imdbRate += float(rating)/2
+		userMoviesRating[movie] = {
+			"rating" : userMovies[movie],
+			"imdb" : float(rating)/2
+		}
 
 	userMoviesRating['userRate'] = userRate
 	userMoviesRating['imdbRate'] = imdbRate
