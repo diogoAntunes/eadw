@@ -4,29 +4,32 @@ from whoosh.qparser import QueryParser
 import os
 import re
 
-#This schema has two fields: id and content
-schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), rating = NUMERIC(stored=True))
 
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
+def populateWhoosh():
 
-#This creates a storage object to contain the index    
-ix = create_in("indexdir",schema)
+	#This schema has two fields: id and content
+	schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), rating = NUMERIC(stored=True))
 
-#Add documents to index
-writer = ix.writer()
+	if not os.path.exists("indexdir"):
+		os.mkdir("indexdir")
 
-#Document interation
-#Open file
-file = open("u1.base")
+	#This creates a storage object to contain the index    
+	ix = create_in("indexdir",schema)
 
-# 196	242	3	881250949
-# user id | item id | rating | timestamp
-for line in file:
-	doc = re.split('\W+', line)	
-	userID = int(doc[0])
-	itemID = int(doc[1])
-	rating = int(doc[2])
-	writer.add_document(userID=userID, itemID=itemID, rating=rating)
+	#Add documents to index
+	writer = ix.writer()
 
-writer.commit()
+	#Document interation
+	#Open file
+	file = open("./Settings/u1.base")
+
+	# 196	242	3	881250949
+	# user id | item id | rating | timestamp
+	for line in file:
+		doc = re.split('\W+', line)	
+		userID = int(doc[0])
+		itemID = int(doc[1])
+		rating = int(doc[2])
+		writer.add_document(userID=userID, itemID=itemID, rating=rating)
+
+	writer.commit()

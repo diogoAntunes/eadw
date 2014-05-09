@@ -153,7 +153,7 @@ def pred(user, prediction):
 	else:
 		predP = 3
 
-	print predP
+	# print predP
 
 	if (predP > 5):
 		predP = 5

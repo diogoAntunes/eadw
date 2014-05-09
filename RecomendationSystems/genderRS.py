@@ -1,3 +1,7 @@
+import sys
+sys.path.append('./DataBaseTools')
+from mongoDBTools import *
+
 # Get the genre of every userMovie
 def getGenre(userMovies):
 	
@@ -125,6 +129,7 @@ def getGenderRS(predictedMovieID, userID):
 	userMovies = getUserMovies(userID)
 	prediction = getMovieRatingPrediction(predictedMovieID, userMovies)
 	
-	return prediction
-
-# getPrediction(264, 3)
+	if int(prediction) == 0:
+		return 1
+	else:
+		return int(prediction)

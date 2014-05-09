@@ -93,8 +93,15 @@ def pred(user, prediction):
 	else:
 		predP = 3
 
-	predP = (rA + (SomatorioCima/SomatorioBaixo))
+	if (predP > 5):
+		predP = 5
+		
+	predReturn = round(predP)
+	predReturn = int(predReturn)
 
-	return predP
+	if (predReturn == 0):
+		predReturn = 1
+
+	return predReturn
 	# print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
 	# print userMovies

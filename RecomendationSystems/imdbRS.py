@@ -1,7 +1,10 @@
 import imdb
 import sys
+import linecache
 sys.path.append('./RecomendationSystems')
+sys.path.append('./DataBaseTools')
 from soupTools import *
+from mongoDBTools import *
 
 # Returns the userID movies and there rating
 def getUserMovies(userID):
@@ -18,7 +21,7 @@ def getUserMovies(userID):
 def movieNotFound(movie):
 
 	print "MOVIE NOT FOUND: ", movie
-	movieNoRate = linecache.getline('u.item', movie)
+	movieNoRate = linecache.getline('./Settings/u.item', movie)
 	movieParsed = movieNoRate.split("|")
 	movieName = movieParsed[1]
 	imdbMovieURL = imdbGetMovieURL(movieName)

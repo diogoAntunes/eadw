@@ -10,7 +10,7 @@ def mongoInsertJSON():
 	db = client.test
 	imdb = db.imdb
 
-	fd = open('populateData', 'r')
+	fd = open('./DataBaseTools/populateData', 'r')
 
 	text = fd.read()
 	fd.close()
@@ -38,7 +38,7 @@ def mongoPopulateUsers():
 	db = client.test
 	users = db.users
 
-	file = open("../Settings/u1.base")
+	file = open("./Settings/u1.base")
 
 	for line in file:
 		doc = re.split('\W+', line)	

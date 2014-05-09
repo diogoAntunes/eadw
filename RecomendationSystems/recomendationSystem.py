@@ -1,13 +1,13 @@
 from whoosh.index import create_in
 from whoosh.fields import *
-from whoosh.qparser import QueryParser
+from whoosh.qparser import *
 import os
 import re
 import operator
 import linecache
 import sys
 from imdbRS import *
-sys.path.append('./DataBaseTools')
+# sys.path.append('./DataBaseTools')
 from mongoDBTools import *
 
 # Recomend a Movie to the user
@@ -46,11 +46,11 @@ def recomendMovie(userID):
 		results = searcher.search(query,limit=100)
 		
 		recomend = results[0]
-		movieNoRate = linecache.getline('u.item', recomend['itemID'])
+		movieNoRate = linecache.getline('./Settings/u.item', recomend['itemID'])
 		movieParsed = movieNoRate.split("|")
 
 		recomend2 = results[1]
-		movieNoRate2 = linecache.getline('u.item', recomend2['itemID'])
+		movieNoRate2 = linecache.getline('./Settings/u.item', recomend2['itemID'])
 		movieParsed2 = movieNoRate2.split("|")
 		
 		iID = recomend['itemID']

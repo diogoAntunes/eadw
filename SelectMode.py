@@ -1,18 +1,17 @@
-from testingSystem import *
 import sys
 sys.path.append('./RecomendationSystems')
 from genderRS import *
 from imdbRS import *
 from userSimilarityRSMongoDB import *
-from userSimilarityRSWhoosh import *
+# from userSimilarityRSWhoosh import *
 from recomendationSystem import *
 sys.path.append('./DatabaseTools')
-from DatabaseTools import *
+from populateDataBase import *
+from populateWhoosh import *
 
 def testSystem():
 	
-	sys.path.append('./Settings')
-	file = open("u1.test")
+	file = open("./Settings/u1.test")
 
 	#ix = open_dir("indexdir")
 	#schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), rating = NUMERIC(stored=True))
@@ -29,7 +28,9 @@ def testSystem():
 		userID = int(doc[0])
 		itemID = int(doc[1])
 		rating = int(doc[2])
-		possibleRating = pred(userID, itemID)
+		# possibleRating = pred(userID, itemID)
+		# possibleRating = getIMDbRS(itemID, userID)
+		possibleRating = getGenderRS(itemID, userID)
 		resultsPred.append(possibleRating)
 		resultsCorrect.append(rating)
 		Somatorio += abs(resultsPred[i] - resultsCorrect[i])
@@ -106,7 +107,12 @@ def TrainMode():
 	ficheiro=raw_input('Type in the File Name to Create the Model: ')
 	
 	print 'Training Please Wait... '
+	print 'Populating MongoDB IMDb... '
+	mongoInsertJSON()
+	print 'Populating MongoDB Users... '
 	mongoPopulateUsers()
+	print 'Populating Whoosh... '
+	populateWhoosh()
 	print 'Done'
 
 
@@ -131,6 +137,9 @@ if (md <= 3 & md >= 1):
 
 	if (md == 3):
 		print "Batch Testing Mode"
+		TestMode()
+
+	
 
 else:
 	print "The input is not a valid number! Select a value between 1 and 3."

@@ -1,4 +1,11 @@
-eadw
+EADW - Recomendation System
 ====
 
-EADW - Project
+Made by:
+
+Diogo Antunes
+Jorge Almeida
+
+
+
+
