@@ -43,6 +43,9 @@ def imdbMongoSetRate(movieID, newRating):
 	db = client.test
 	imdb = db.imdb
 	
+	print 'MOVIE ID: ', movieID
+	print 'NEW RATE : ', newRating
+
 	imdb.update({"id" : movieID}, {"$set": {"rating" : newRating}})
 	client.disconnect()
 
@@ -140,25 +143,25 @@ def mongoGetAVG(userID):
 	for result in results:
 		return result['av']
 
-# def test(movie):
+def imdbMongoGetTopMovies():
 
-# 	client = newMongoConnection()
-# 	db = client.test
-# 	imdb = db.users
-	
-# 	# Todos os users com o movieID
-# 	results = db.users.find({'movies.itemID' : {"$in" : [movie]}})
-	
-# 	sameMovies = dict()
+	client = newMongoConnection()
+	db = client.test
+	imdb = db.imdb
 
-# 	for result in results:
-# 		if result
-# 		print result['userID']	
+	results = imdb.find().sort("rating", -1).limit(10)
 
-# 	print count
+	dataToReturn = []
+	didi = dict()
 
-# test()
-# mongoGetAVG(1)
+	for result in results:
+		didi = {
+			'itemID' : result['id'],
+			'content' : result['des'],
+			'rating' : result['rating']
+		}
+		dataToReturn.append(didi)
 
-# imdbMongoGetMovie(11)
-# imdbMongoAddMovie(272, 'alalallala', 7.8)
+	return dataToReturn
+
+# print imdbMongoGetTopMovies()[0]
