@@ -78,19 +78,18 @@ def mongoFindItem(itemID, sameMovies, prediction):
 	# users que tem o pred movie ou pelo menos
 	# um movie igual ao user
 	# docs = users.find({"itemID": itemID})
+	
 	docs = db.users.find({'movies.itemID' : {"$all" : [itemID, prediction]}})
 	
-	client.disconnect()
+	
 
+	client.disconnect()
 
 	# users que tem pelo menos um movie igual 
 	# ao do user, e tem o predMovie
 	for doc in docs:
-		if doc['userID'] in sameMovies.keys(): 
-			sameMovies[doc['userID']] += 1
-		else:
-			sameMovies[doc['userID']] = 1
-	
+		sameMovies.append(doc['userID'])
+
 	return sameMovies
 
 def mongoFindItemPred(itemID):

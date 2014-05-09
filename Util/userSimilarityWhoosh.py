@@ -15,7 +15,7 @@ def sim(a, b, userMovies, predict):
 		results = searcher.search(query,limit=10000)
 		for r in results:
 			ratesB[r['itemID']] = r['rating'] 
-
+	
 	#print b
 	#print ratesB
 	#print a

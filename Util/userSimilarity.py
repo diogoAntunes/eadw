@@ -67,7 +67,7 @@ def sim(rA, rB, a, b, userMovies, predict):
 	RateInA = math.sqrt(RateInA)
 	RateInB = math.sqrt(RateInB)
 
-	Similaridade = ((SomatorioRateInA_B)/(RateInA * RateInA))
+	Similaridade = ((SomatorioRateInA_B)/(RateInA * RateInB))
 	
 	#RATING ITEM PARA PREDICTION POR ESTE USER B
 	# print ratesB[predict]
@@ -83,16 +83,18 @@ def sim(rA, rB, a, b, userMovies, predict):
 def pred(user, prediction):
 
 	userMovies = userMongoGetUser(user)	#dicionario com os items rated e rating do user escolhido
-	sameMovies = dict()		#array de users com pelo menos 1 item rated igual ao user escolhido
+	sameMovies = []		#array de users com pelo menos 1 item rated igual ao user escolhido
 	countUsers = dict()
 	predictionUsers = dict()
 	chosenUsers = []
 	chosenUsersFinal = []
 
+	print "A"
+	print len(userMovies.keys())
 	# utilizadores que tem pelo menos 1 item em comum com o userA
 	for movie in userMovies.keys():
 		sameMovies = mongoFindItem(movie, sameMovies, prediction)
-	
+	print "B"
 	# print sameMovies
 	#PROCURAR NOS USERS SE TEM O ITEM QUE O CLIENTE QUER SABER O RATING
 	# predictionUsers = mongoFindItemPred(prediction)
@@ -100,15 +102,15 @@ def pred(user, prediction):
 	#VERIFICAR NUMERO DE ITEMS RATED EM COMUM ENTRE UTILIZADOR ESCOLHIDO E RESTANTES
 	# sameMovies = ['userID', 'userID', 'userID'...]
 	# ids de users que tem pelo menos um dos filmes do user
-	# for item in sameMovies:
-	# 	if item in countUsers.keys():
-	# 		countUsers[item] += 1
-	# 	else:
-	# 		countUsers[item] = 1
+	for item in sameMovies:
+		if item in countUsers.keys():
+			countUsers[item] += 1
+		else:
+			countUsers[item] = 1
 	
 	#APENAS ESCOLHER OS QUE TEM 15 OU MAIS ITEMS RATED EM COMUM
-	for item in sameMovies.keys():
-		if (sameMovies[item] >= 15):
+	for item in sameMovies:
+		if (countUsers[item] >= 15):
 			chosenUsers.append(item)
 
 	#SELECIONAR APENAS OS USERS QUE DERAM RATE AO ITEM QUE O UTILIZADOR ESCOLHIDO AINDA NAO PONTUOU
@@ -146,8 +148,8 @@ def pred(user, prediction):
 
 	predP = (rA + (SomatorioCima/SomatorioBaixo))
 
-	return predP
-	# print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
-	# print userMovies
+	# return predP
+	print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
+	print userMovies
 
-# pred(1, 258)
+pred(3, 256)
