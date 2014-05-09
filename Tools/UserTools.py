@@ -31,6 +31,8 @@ def getUserMoviesRating(userMovies, predictID):
 		if rating == 'no movie':
 			rating = movieNotFound(movie)
 
+		if rating is None:
+			rating = 6
 
 		# If rate is 0
 		# fetch imdbpy or rt
@@ -42,6 +44,8 @@ def getUserMoviesRating(userMovies, predictID):
 			rating = moviesRating(movieName)
 			imdbMongoSetRate(movie, rating)
 		
+
+
 		userRate += float(userMovies[movie])
 		imdbRate += float(rating)/2
 		userMoviesRating[movie] = {

@@ -1,3 +1,5 @@
+from eadw import *
+
 
 def selectMode():
 	
@@ -25,6 +27,16 @@ def onMode():
 	#print userID
 	#chamar recomendacao de movies
 	#gerar classificacao para estes movies
+	itemID, rating, title, itemID2, rating2, title2 = recomendMovie(userID)
+	print 'Recomended Movies: '
+	print '1)'
+	print 'Movie ID: ', itemID
+	print 'Title: ', title
+	print 'Rating: ', rating
+	print '2)'
+	print 'Movie ID: ', itemID2
+	print 'Title: ', title2
+	print 'Rating: ', rating2
 
 def TrainMode():
 

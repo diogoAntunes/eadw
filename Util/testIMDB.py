@@ -22,9 +22,7 @@ for line in file:
 	possibleRating = imdbPrediction(itemID, userID)
 	resultsPred.append(possibleRating)
 	resultsCorrect.append(rating)
-	
-	mongoTesteADD(userID, itemID, rating)
-	
+		
 	print "PREDICTION = " + str(possibleRating) + "      CORRECT RATING --------->" + str(rating) + " I = " + str(i)
 	i += 1 
 

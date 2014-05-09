@@ -43,6 +43,9 @@ def imdbMongoSetRate(movieID, newRating):
 	db = client.test
 	imdb = db.imdb
 	
+	print 'MOVIE ID: ', movieID
+	print 'NEW RATE : ', newRating
+
 	imdb.update({"id" : movieID}, {"$set": {"rating" : newRating}})
 	client.disconnect()
 
