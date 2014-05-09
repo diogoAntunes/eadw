@@ -23,7 +23,6 @@ def getRatings(url):
 		br.open(url)
 
 		if re.search(r'/title/tt.*', br.geturl()):
-			print 'B'
 			soup = BeautifulSoup(MyOpener().open(url).read())
 		else:
 			link = br.find_link(url_regex = re.compile(r'/title/tt.*'))
@@ -46,8 +45,6 @@ def getRatings(url):
 			rating = str(0)
 			print 'No rate'
 	
-
-
 	return rating, des
 
 # Saves Ratings of Movie to JSON file
@@ -77,7 +74,7 @@ def moviesRatingToDB():
 			print 'ERROR writing'
 			pass
 
-moviesRatingToDB()
+# moviesRatingToDB()
 
 # getRatings('http://us.imdb.com/M/title-exact?Mis%E9rables%2C%20Les%20%281995%29')
 # getRatings('http://us.imdb.com/M/title-exact?Mighty%20Aphrodite%20(1995)')

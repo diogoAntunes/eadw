@@ -38,7 +38,18 @@ def mongoPopulateUsers():
 		userID = int(doc[0])
 		itemID = int(doc[1])
 		rating = int(doc[2])
-		newUser = {'userID' : userID, 'itemID' : itemID, 'rating' : rating }
-		users.insert(newUser)
 
-mongoInsertJSON()
+		users.update({'userID' : userID},{
+			"$push": { 'movies' : {'itemID' : itemID, 'rating' : rating} }
+   	}, True)
+		
+
+def mongoTesteADD(userID, itemID, rating):
+	client = MongoClient('localhost', 27017)	
+	db = client.test
+	users = db.users
+
+	newUser = {'userID' : userID, 'itemID' : itemID, 'rating' : rating }
+	users.insert(newUser)
+
+mongoPopulateUsers()

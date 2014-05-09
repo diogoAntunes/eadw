@@ -34,16 +34,19 @@ def imdbPrediction(movieID, userID):
 	# pprint(userMoviesRating)
 
 	# print "prediction", pred
-	if movieID in userMoviesRating.keys():
-		predReturn = (userMoviesRating[movieID]['imdb'] - (pred))
+	predMovieRate = imdbMongoGetMovieRating(movieID)
+
+	if predMovieRate == 'no movie':
+		predMovieRate = movieNotFound(movieID)
+				
+	predReturn = ((float(predMovieRate)/2) - (pred))
+
+	if int(predReturn) == 0:
+		return 1
 	else:
-		predMovieRate = imdbMongoGetMovie(movieID)['rating']
-	# print predMovieRate
-	# print pred
-		predReturn = ((float(predMovieRate)/2) - (pred))
+		return int(predReturn)		
 
-
-	return int(predReturn)
+	
 
 
 # print imdbPrediction(264, 3)
@@ -126,5 +129,5 @@ def user(userID):
 			print r['itemID']
 
 
-user(3)
-320 - 688
+# user(3)
+# 320 - 688

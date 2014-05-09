@@ -1,7 +1,8 @@
 from whoosh.index import open_dir
 from whoosh.qparser import  *
-#from imdbTools import *
-#from mongoDBTools import *
+from imdbTools import *
+from mongoDBTools import *
+from soupTools import *
 import re
 import linecache
 
@@ -12,6 +13,7 @@ def getUserMovies(userID):
 	
 # Returns the rating of the movies
 # the user has rated
+	return userMovies
 
 def getUserMoviesRating(userMovies, predictID):
 
@@ -24,7 +26,12 @@ def getUserMoviesRating(userMovies, predictID):
 	# buscar o rating dos users movies ao imdb
 	# imdbMongoGetMovie(movieID)
 	for movie in userMovies.keys():
-		rating = imdbMongoGetMovie(movie)['rating']
+		rating = imdbMongoGetMovieRating(movie)
+
+		if rating == 'no movie':
+			rating = movieNotFound(movie)
+
+
 		# If rate is 0
 		# fetch imdbpy or rt
 		# imdb needs the movie tittle
@@ -42,7 +49,19 @@ def getUserMoviesRating(userMovies, predictID):
 			"imdb" : float(rating)/2
 		}
 
-# 	userMoviesRating['userRate'] = userRate
-# 	userMoviesRating['imdbRate'] = imdbRate
+	userMoviesRating['userRate'] = userRate
+	userMoviesRating['imdbRate'] = imdbRate
 
-# 	return userMoviesRating
+	return userMoviesRating
+
+def movieNotFound(movie):
+
+	print "BAD MOVIE"
+	movieNoRate = linecache.getline('u.item', movie)
+	movieParsed = movieNoRate.split("|")
+	movieName = movieParsed[1]
+	imdbMovieURL = imdbGetMovieURL(movieName)
+	rating, des = getRatings(imdbMovieURL)
+	imdbMongoAddMovie(movie, des, rating)
+
+	return rating

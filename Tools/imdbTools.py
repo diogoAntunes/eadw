@@ -57,10 +57,23 @@ def moviesRating(movieName):
 	ia = imdb.IMDb()
 	searchResult = ia.search_movie(movieName)[0]
 	imdbID = searchResult.movieID
-	s_result = ia.get_movie(imdbID)	
-	keys = s_result.keys()
+	
+	try:
+		s_result = ia.get_movie(imdbID)	
+		keys = s_result.keys()
 
-	if 'rating' in keys:
-		return s_result['rating']
+		if 'rating' in keys:
+			return s_result['rating']
+	except:
+		print 'No Rate'
+		return 3
 
-# print moviesRating('Apostle, The (1997)')
+def imdbGetMovieURL(movieName):
+	ia = imdb.IMDb()
+	searchResult = ia.search_movie(movieName)[0]
+	url = ia.get_imdbURL(searchResult)
+	
+	return url
+	
+
+# imdbGetMovie('Gladiator', 2)

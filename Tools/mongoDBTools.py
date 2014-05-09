@@ -21,18 +21,20 @@ def imdbMongoGetMovie(movieID):
 
 	if doc:
 		return doc
+	else:
+		return 'no movie'
 
-def imdbMongoAddMovie(movieID, des, rating):
+def imdbMongoGetMovieRating(movieID):
 	client = newMongoConnection()
 	db = client.test
 	imdb = db.imdb
-	newMovie = {
-		"id" : movieID,
-		"des" : des,
-		"rating" : rating
-	}
-	imdb.insert(newMovie)
+	doc = imdb.find_one({'id' : movieID})
 	client.disconnect()
+
+	if doc:
+		return doc['rating']
+	else:
+		return 'no movie'
 
 
 def imdbMongoSetRate(movieID, newRating):
@@ -55,18 +57,19 @@ def userMongoGetUser(userID):
 	db = client.test
 	users = db.users
 
-	docs = users.find({"userID": userID})
+	doc = users.find_one({"userID": userID})
 	client.disconnect()
 
 	userToReturn = dict()
-
-	for doc in docs:
-		userToReturn[doc['itemID']] = doc['rating']
 	
+	movies = doc['movies']
+	for movie in movies:
+		userToReturn[movie['itemID']] = movie['rating']
+
 	return userToReturn
 
 
-def mongoFindItem(itemID, sameMovies):
+def mongoFindItem(itemID, sameMovies, prediction):
 	
 	client = newMongoConnection()
 	db = client.test
@@ -74,9 +77,9 @@ def mongoFindItem(itemID, sameMovies):
 
 	# users que tem o pred movie ou pelo menos
 	# um movie igual ao user
-	# docs = users.find({"$or" : [{"itemID": itemID}, {"itemID": predMovie}]})
-	docs = users.find({"itemID": itemID})
-	# docsPredMovie = users.find({"itemID": predMovie})
+	# docs = users.find({"itemID": itemID})
+	docs = db.users.find({'movies.itemID' : {"$all" : [itemID, prediction]}})
+	
 	client.disconnect()
 
 
@@ -113,4 +116,50 @@ def mongoFindItemPred(itemID):
 	return returnData
 
 
-# imdbMongoGetAllMovies()
+def imdbMongoAddMovie(movieID, des, rating):
+	print 'Adding Movie'
+	print movieID, des, rating
+	client = newMongoConnection()
+	db = client.test
+	imdb = db.imdb
+	newMovie = {'id' : movieID, 'rating' : rating, 'des' : des}
+	imdb.insert(newMovie)
+
+	client.disconnect()
+
+def mongoGetAVG(userID):
+	
+	client = newMongoConnection()
+	db = client.test
+	imdb = db.users
+	query = [{"$match": {"userID": userID}}, {"$unwind":"$movies"}, 
+			{"$project": {"_id" : 0, "q" :"$query", "i" :"$movies.rating"}}, 
+			{"$group" : {"_id": "$q", "av": {"$avg" : "$i"}}}]
+
+	results = db.users.aggregate(query, cursor = {})
+
+	for result in results:
+		return result['av']
+
+# def test(movie):
+
+# 	client = newMongoConnection()
+# 	db = client.test
+# 	imdb = db.users
+	
+# 	# Todos os users com o movieID
+# 	results = db.users.find({'movies.itemID' : {"$in" : [movie]}})
+	
+# 	sameMovies = dict()
+
+# 	for result in results:
+# 		if result
+# 		print result['userID']	
+
+# 	print count
+
+# test()
+# mongoGetAVG(1)
+
+# imdbMongoGetMovie(11)
+# imdbMongoAddMovie(272, 'alalallala', 7.8)

@@ -1,21 +1,15 @@
 import re
-from userSimilarityWhoosh import *
-from eadw import *
-from whoosh.index import create_in
-from whoosh.fields import *
-from whoosh.qparser import QueryParser
+from userSimilarity import *
 import os
 
 file = open("u1.test")
-ix = open_dir("indexdir")
-schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), rating = NUMERIC(stored=True))
+
 
 resultsPred = []
 resultsCorrect = []
 i=0
 
 for line in file:
-	writer = ix.writer()
 	doc = re.split('\W+', line)	
 	userID = int(doc[0])
 	itemID = int(doc[1])
@@ -24,9 +18,6 @@ for line in file:
 	#possibleRating = getPrediction(itemID, userID)
 	resultsPred.append(possibleRating)
 	resultsCorrect.append(rating)
-
-	writer.add_document(userID=userID, itemID=itemID, rating=rating)
-	writer.commit()
 	
 	print "PREDICTION = " + str(possibleRating) + "      CORRECT RATING --------->" + str(rating) + " I = " + str(i)
 	i += 1 

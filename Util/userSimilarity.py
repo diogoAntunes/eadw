@@ -7,7 +7,7 @@ import sys
 sys.path.append('../Tools')
 from mongoDBTools import *
 
-def sim(a, b, userMovies, predict):
+def sim(rA, rB, a, b, userMovies, predict):
 
 	# ix = open_dir("indexdir")
 	ratesA = userMovies # movieID : raiting
@@ -33,32 +33,32 @@ def sim(a, b, userMovies, predict):
 
 
 	#VARIAVEIS PARA CALCULO DA SIMILARIDADE
-	SomaP = 0 		#set of items, rated both by a and b	
-	Rbp = 0			#rating of user b for item p
-	rA = 0			# user A average ratings
-	rB = 0			# user B average ratings
-
-	#CALCULO AVERAGE RATINGS
-	contador = 0
 	
-	for item in ratesA.keys():
-		contador += ratesA[item]
-
-	rA = contador/nRatingsA
 	
-	contador = 0
+	# Para os dois users ir buscar a intersection entre as keys()
+	# Para cada um dos users calcular a media dos seus ratings
+	# Agora apenas para os items na intersection
+	# Para cada user subtrair o seu rate - a sua media
 
-	for item in ratesB.keys():
-		contador += ratesB[item]
+	# for item in ratesA.keys():
+	# 	contador += ratesA[item]
 
-	rB = contador/nRatingsB
+	# rA = contador/nRatingsA
+	
+	# contador = 0
+
+	# for item in ratesB.keys():
+	# 	contador += ratesB[item]
+
+	# rB = contador/nRatingsB
 
 	#CALCULO SOMATORIO P	
 	contador = 0
 	RateInA = 0
 	RateInB = 0
 	SomatorioRateInA_B = 0
-
+	Rbp = 0			#rating of user b for item p
+	
 	for item in intersection:
 		SomatorioRateInA_B += ((ratesA[item] - rA) * (ratesB[item] - rB))
 		RateInA += ((ratesA[item] - rA)*(ratesA[item] - rA))
@@ -76,7 +76,7 @@ def sim(a, b, userMovies, predict):
 	#print "SIMILARIDADE: "
 	#print Similaridade
 
-	return Similaridade, Rbp, rA, rB
+	return Similaridade, Rbp
 
 
 #CALCULO PARA PREDICTION
@@ -89,12 +89,13 @@ def pred(user, prediction):
 	chosenUsers = []
 	chosenUsersFinal = []
 
+	# utilizadores que tem pelo menos 1 item em comum com o userA
 	for movie in userMovies.keys():
-		sameMovies = mongoFindItem(movie, sameMovies)
+		sameMovies = mongoFindItem(movie, sameMovies, prediction)
 	
 	# print sameMovies
 	#PROCURAR NOS USERS SE TEM O ITEM QUE O CLIENTE QUER SABER O RATING
-	predictionUsers = mongoFindItemPred(prediction)
+	# predictionUsers = mongoFindItemPred(prediction)
 
 	#VERIFICAR NUMERO DE ITEMS RATED EM COMUM ENTRE UTILIZADOR ESCOLHIDO E RESTANTES
 	# sameMovies = ['userID', 'userID', 'userID'...]
@@ -111,11 +112,11 @@ def pred(user, prediction):
 			chosenUsers.append(item)
 
 	#SELECIONAR APENAS OS USERS QUE DERAM RATE AO ITEM QUE O UTILIZADOR ESCOLHIDO AINDA NAO PONTUOU
-	for item in chosenUsers:
-		if item in predictionUsers:
-			chosenUsersFinal.append(item)
+	# for item in chosenUsers:
+	# 	if item in predictionUsers:
+	# 		chosenUsersFinal.append(item)
 
-	flag = len(chosenUsersFinal)
+	flag = len(chosenUsers)
 	#print "FLAGGGGG"
 	#print flag
 
@@ -125,8 +126,15 @@ def pred(user, prediction):
 	rA = 0
 
 	#FORMULA PARA PREDICTION PRED(A,P)
-	for item in chosenUsersFinal:
-		Similaridade, Rbp, rA, rB = sim(user, item, userMovies, prediction)
+	for item in chosenUsers:
+		# print item
+		#  mudar item para userChoosen
+		rA = mongoGetAVG(user)
+		rB = mongoGetAVG(item)
+		# print rA
+		# print rB
+
+		Similaridade, Rbp = sim(rA, rB, user, item, userMovies, prediction)
 		if (flag > 9):
 			if (Similaridade >= 0.5):
 				SomatorioCima += (Similaridade * (Rbp - rB))
@@ -142,4 +150,4 @@ def pred(user, prediction):
 	# print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
 	# print userMovies
 
-# pred(3, 65)
+# pred(1, 258)

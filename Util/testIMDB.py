@@ -1,32 +1,29 @@
 import re
-from userSimilarityWhoosh import *
-from eadw import *
-from whoosh.index import create_in
-from whoosh.fields import *
-from whoosh.qparser import QueryParser
 import os
+import sys
+sys.path.append('../')
+from eadw import *
 
 file = open("u1.test")
-ix = open_dir("indexdir")
-schema = Schema(userID = NUMERIC(stored=True), itemID = NUMERIC(stored=True), rating = NUMERIC(stored=True))
+
 
 resultsPred = []
 resultsCorrect = []
 i=0
 
 for line in file:
-	writer = ix.writer()
 	doc = re.split('\W+', line)	
 	userID = int(doc[0])
 	itemID = int(doc[1])
 	rating = int(doc[2])
-	possibleRating = int(pred(userID, itemID))
-	#possibleRating = getPrediction(itemID, userID)
+	# possibleRating = int(pred(userID, itemID))
+	# possibleRating = getPrediction(itemID, userID)
+	# print itemID
+	possibleRating = imdbPrediction(itemID, userID)
 	resultsPred.append(possibleRating)
 	resultsCorrect.append(rating)
-
-	writer.add_document(userID=userID, itemID=itemID, rating=rating)
-	writer.commit()
+	
+	mongoTesteADD(userID, itemID, rating)
 	
 	print "PREDICTION = " + str(possibleRating) + "      CORRECT RATING --------->" + str(rating) + " I = " + str(i)
 	i += 1 
