@@ -3,8 +3,9 @@ from whoosh.qparser import  *
 import re
 from pprint import pprint
 import math
+import operator
 
-def sim(a, b, userMovies, predict):
+def sim(a, b, userMovies, predict, rA):
 
 	ix = open_dir("indexdir")
 	ratesA = userMovies # movieID : raiting
@@ -20,11 +21,9 @@ def sim(a, b, userMovies, predict):
 	#print ratesB
 	#print a
 	#print ratesA
-
 	keys_a = set(ratesA.keys())
 	keys_b = set(ratesB.keys())
 	
-	nRatingsA = len(keys_a)		#number of items rated by A
 	nRatingsB = len(keys_b)		#number of items rated by B
 
 	intersection = keys_a & keys_b
@@ -36,30 +35,24 @@ def sim(a, b, userMovies, predict):
 	#VARIAVEIS PARA CALCULO DA SIMILARIDADE
 	SomaP = 0 		#set of items, rated both by a and b	
 	Rbp = 0			#rating of user b for item p
-	rA = 0			# user A average ratings
 	rB = 0			# user B average ratings
 
 	#CALCULO AVERAGE RATINGS
-	contador = 0
-	
-	for item in ratesA.keys():
-		contador += ratesA[item]
-
-	rA = contador/nRatingsA
-	
 	contador = 0
 
 	for item in ratesB.keys():
 		contador += ratesB[item]
 
-	rB = contador/nRatingsB
+	rB = float(contador)/nRatingsB
+
+	print rB
 
 	#CALCULO SOMATORIO P	
-	contador = 0
 	RateInA = 0
 	RateInB = 0
 	SomatorioRateInA_B = 0
 
+	#print intersection
 	for item in intersection:
 		SomatorioRateInA_B += ((ratesA[item] - rA) * (ratesB[item] - rB))
 		RateInA += ((ratesA[item] - rA)*(ratesA[item] - rA))
@@ -79,7 +72,7 @@ def sim(a, b, userMovies, predict):
 	#print "SIMILARIDADE: "
 	#print Similaridade
 
-	return Similaridade, Rbp, rA, rB
+	return Similaridade, Rbp, rB
 
 
 #CALCULO PARA PREDICTION
@@ -138,35 +131,68 @@ def pred(user, prediction):
 			chosenUsersFinal.append(item)
 
 	flag = len(chosenUsersFinal)
-	#print "FLAGGGGG"
-	#print flag
 
 	#VARIAVEIS PARA PREDICTON
 	SomatorioCima = 0
 	SomatorioBaixo = 0
-	rA = 0
+	
+	ratesA = userMovies
+	keys_a = set(ratesA.keys())
+	nRatingsA = len(keys_a)		#number of items rated by A
+	contador = 0
+	for item in ratesA.keys():
+		contador += ratesA[item]
 
+	rA = contador/nRatingsA
+
+	print "CHEGUEI"
+	print rA
+	print chosenUsersFinal
 	#FORMULA PARA PREDICTION PRED(A,P)
 	for item in chosenUsersFinal:
-		Similaridade, Rbp, rA, rB = sim(user, str(item), userMovies, prediction)
+		Similaridade, Rbp, rB = sim(user, str(item), userMovies, prediction, rA)
 		if (flag > 9):
-			if (Similaridade >= 0.5):
+			if (Similaridade >= 0.4):
 				SomatorioCima += (Similaridade * (Rbp - rB))
 				SomatorioBaixo += Similaridade
 		else:
-			SomatorioCima += (Similaridade * (Rbp - rB))
-			SomatorioBaixo += Similaridade
+			if(Similaridade >= 0):
+				SomatorioCima += (Similaridade * (Rbp - rB))
+				SomatorioBaixo += Similaridade
 
-	if(SomatorioBaixo != 0):
+	if (SomatorioBaixo != 0):
 		predP = (rA + (SomatorioCima/SomatorioBaixo))
 	else:
 		predP = 3
+		print "ola"
 
-	return predP
-	#print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predP)
-	#print userMovies
+	# for item in chosenUsersFinal:
+	# 	Similaridade, Rbp, rA, rB = sim(user, str(item), userMovies, prediction, rA)
+	# 	SimByUser[item] = Similaridade, Rbp, rA, rB
 
-#pred(3, 65)
+	# sorted_SimByUser = sorted(SimByUser.iteritems(), key=operator.itemgetter(1), reverse=True)
+	# #print len(sorted_SimByUser.keys())
+	# print sorted_SimByUser
+	print predP
+
+	if (predP >= 4.3):
+		predP = 5
+
+		
+	predReturn = round(predP)
+	predReturn = int(predReturn)
+
+	if (predReturn == 0):
+		predReturn = 1
+
+	#return predReturn
+	print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predReturn)
+	print userMovies
+
+pred(3, 258)
+
+
+
 
 
 
