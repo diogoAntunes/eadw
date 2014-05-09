@@ -52,4 +52,4 @@ def mongoTesteADD(userID, itemID, rating):
 	newUser = {'userID' : userID, 'itemID' : itemID, 'rating' : rating }
 	users.insert(newUser)
 
-mongoPopulateUsers()
+mongoInsertJSON()

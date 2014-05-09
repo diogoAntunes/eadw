@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../Tools')
+sys.path.append('./Tools')
 from UserTools import *
 from MoviesTools import *
 from pprint import pprint
@@ -128,6 +128,51 @@ def user(userID):
 			print r.score
 			print r['itemID']
 
+def recomendMovie(userID):
+
+	userMovies = userMongoGetUser(userID)
+	maxRateMovie = max(userMovies.iteritems(), key=operator.itemgetter(1))[0]
+	print maxRateMovie
+	topMovies = imdbMongoGetTopMovies()
+
+	movieIMDB = imdbMongoGetMovie(maxRateMovie)
+
+	des = movieIMDB['des']
+
+	schema = Schema(itemID = NUMERIC(stored=True), content=TEXT, rating = NUMERIC(stored=True))
+
+	if not os.path.exists("indexdir"):
+	  os.mkdir("indexdir")
+
+	#This creates a storage object to contain the index    
+	ix = create_in("indexdir", schema)
+
+	#Add documents to index
+	writer = ix.writer()
+
+	for movie in topMovies:
+		itemID = movie['itemID']
+		content = movie['content']
+		rating = movie['rating']
+		writer.add_document(itemID= itemID, content= content, rating= float(rating))
+
+	writer.commit()
+	
+	with ix.searcher() as searcher:
+		query = QueryParser("content",ix.schema,group=OrGroup).parse(des)
+		results = searcher.search(query,limit=100)
+		recomend = results[0]
+		
+	return recomend['itemID']
+
+
+# recomendMovie(3)
 
 # user(3)
 # 320 - 688
+
+# user saca o movie com mais cotation e a des
+# imdb 10 movies mais pros
+# indexar no whoosh
+# calcular a similiraty
+# sugerir 2
