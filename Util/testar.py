@@ -9,7 +9,8 @@ file = open("u1.test")
 
 resultsPred = []
 resultsCorrect = []
-i=0
+i = 0
+Somatorio = 0
 
 for line in file:
 
@@ -22,12 +23,13 @@ for line in file:
 	#possibleRating = getPrediction(itemID, userID)
 	resultsPred.append(possibleRating)
 	resultsCorrect.append(rating)
-
+	Somatorio += abs(resultsPred[i] - resultsCorrect[i])
 	#writer.add_document(userID=userID, itemID=itemID, rating=rating)
 	#writer.commit()
 	
-	print "PREDICTION = " + str(possibleRating) + "      CORRECT RATING --------->" + str(rating) + " I = " + str(i)
+	print "PREDICTION = " + str(possibleRating) + "	 CORRECT RATING = " + str(rating) + "	Somatorio = " + str(Somatorio) + "	  I = " + str(i)
 	i += 1 
+
 
 MAE = 0			#MEAN ABSOLUTE ERROR
 Somatorio = 0

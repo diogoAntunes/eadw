@@ -45,8 +45,6 @@ def sim(a, b, userMovies, predict, rA):
 
 	rB = float(contador)/nRatingsB
 
-	print rB
-
 	#CALCULO SOMATORIO P	
 	RateInA = 0
 	RateInB = 0
@@ -120,9 +118,9 @@ def pred(user, prediction):
 			else:
 				countUsers[valor] = 1
 	
-	#APENAS ESCOLHER OS QUE TEM 15 OU MAIS ITEMS RATED EM COMUM
+	#APENAS ESCOLHER OS QUE TEM 10 OU MAIS ITEMS RATED EM COMUM
 	for item in countUsers:
-		if (countUsers[item] >= 15):
+		if (countUsers[item] >= 10):
 			chosenUsers.append(item)
 
 	#SELECIONAR APENAS OS USERS QUE DERAM RATE AO ITEM QUE O UTILIZADOR ESCOLHIDO AINDA NAO PONTUOU
@@ -143,16 +141,13 @@ def pred(user, prediction):
 	for item in ratesA.keys():
 		contador += ratesA[item]
 
-	rA = contador/nRatingsA
+	rA = float(contador)/nRatingsA
 
-	print "CHEGUEI"
-	print rA
-	print chosenUsersFinal
 	#FORMULA PARA PREDICTION PRED(A,P)
 	for item in chosenUsersFinal:
 		Similaridade, Rbp, rB = sim(user, str(item), userMovies, prediction, rA)
 		if (flag > 9):
-			if (Similaridade >= 0.4):
+			if (Similaridade >= 0.5):
 				SomatorioCima += (Similaridade * (Rbp - rB))
 				SomatorioBaixo += Similaridade
 		else:
@@ -175,9 +170,8 @@ def pred(user, prediction):
 	# print sorted_SimByUser
 	print predP
 
-	if (predP >= 4.3):
+	if (predP > 5):
 		predP = 5
-
 		
 	predReturn = round(predP)
 	predReturn = int(predReturn)
@@ -185,11 +179,11 @@ def pred(user, prediction):
 	if (predReturn == 0):
 		predReturn = 1
 
-	#return predReturn
-	print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predReturn)
-	print userMovies
+	return predReturn
+	#print "PREDICTON PARA ITEM: " + str(prediction) + " = " + str(predReturn)
+	#print userMovies
 
-pred(3, 258)
+#pred(3, 258)
 
 
 
