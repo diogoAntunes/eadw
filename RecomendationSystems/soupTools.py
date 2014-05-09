@@ -4,7 +4,6 @@ import urllib
 import urlparse
 import unicodedata
 import simplejson
-import json
 
 from mechanize import Browser
 from BeautifulSoup import BeautifulSoup
@@ -73,8 +72,3 @@ def moviesRatingToDB():
 		except:
 			print 'ERROR writing'
 			pass
-
-# moviesRatingToDB()
-
-# getRatings('http://us.imdb.com/M/title-exact?Mis%E9rables%2C%20Les%20%281995%29')
-# getRatings('http://us.imdb.com/M/title-exact?Mighty%20Aphrodite%20(1995)')

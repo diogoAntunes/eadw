@@ -1,7 +1,6 @@
 from whoosh.index import open_dir
 from whoosh.qparser import  *
 import re
-from pprint import pprint
 import math
 import operator
 
@@ -67,9 +66,6 @@ def sim(a, b, userMovies, predict, rA):
 	#RATING ITEM PARA PREDICTION POR ESTE USER B
 	Rbp = ratesB[predict]
 
-	#print "SIMILARIDADE: "
-	#print Similaridade
-
 	return Similaridade, Rbp, rB
 
 
@@ -91,9 +87,6 @@ def pred(user, prediction):
 
 		for r in results:
 			userMovies[r['itemID']] = r['rating']
-		#print user
-		#print len(userMovies.keys())
-		#print userMovies
 
 		for item in userMovies.keys():
 			a = str(item)
@@ -159,15 +152,7 @@ def pred(user, prediction):
 		predP = (rA + (SomatorioCima/SomatorioBaixo))
 	else:
 		predP = 3
-		print "ola"
 
-	# for item in chosenUsersFinal:
-	# 	Similaridade, Rbp, rA, rB = sim(user, str(item), userMovies, prediction, rA)
-	# 	SimByUser[item] = Similaridade, Rbp, rA, rB
-
-	# sorted_SimByUser = sorted(SimByUser.iteritems(), key=operator.itemgetter(1), reverse=True)
-	# #print len(sorted_SimByUser.keys())
-	# print sorted_SimByUser
 	print predP
 
 	if (predP > 5):
@@ -184,11 +169,3 @@ def pred(user, prediction):
 	#print userMovies
 
 #pred(3, 258)
-
-
-
-
-
-
-
-
