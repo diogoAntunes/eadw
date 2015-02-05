@@ -1,10 +1,12 @@
 EADW - Recomendation System
 ====
 
-Made by:
+Web Data Extraction and Analysis
 
-Diogo Antunes
-Jorge Almeida
+Requirement:
+  - Python 2.7
+
+Recomendation System for movies
 
 
 
